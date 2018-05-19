@@ -11,6 +11,7 @@ if __name__ == '__main__':
     # 24号
     START,END = PARA['date']['24'][0],PARA['date']['24'][1]
     path_dir = PARA['path_in']
+    # path_dir = r'E:\sc\beijingdidi\wrong'
 
     # 读取所有文件
     all_paths = _tools.get_all_csv(path_dir)

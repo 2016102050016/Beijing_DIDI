@@ -74,7 +74,7 @@ def read_data(path, START_TIME, END_TIME):
         time_gap = abs(data_list[i][2] - temp_data[-1][2])
         v = dis / time_gap
         # 静止条件速度低于1m/s
-        if v < 1:
+        if v == 0:
             data_list[i][3] = 0
             temp_data.append(data_list[i])
         else:

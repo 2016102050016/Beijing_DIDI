@@ -83,7 +83,7 @@ def get_stop_point(data_breakpoint, START_TIME, END_TIME):
             time_gap = v[i + 1][2] - v[i][2]
             dis_gap = _tools.haversine(v[i][0], v[i][1], v[i + 1][0], v[i + 1][1])
             # 两个停留点之间间隔小于120s或者距离500m内
-            if time_gap < 120 or dis_gap < 500:
+            if time_gap < 60 and dis_gap < 500:
                 stop_set_i.append(v[i])
             else:
                 if len(stop_set_i) > 0:
@@ -99,7 +99,7 @@ def get_stop_point(data_breakpoint, START_TIME, END_TIME):
         # 停留点集合第一个与最后一个点的距离
         dis_gap = _tools.haversine(line[-1][0], line[-1][1], line[0][0], line[0][1])
         # 停留点识别：超过3min且在500米范围内
-        if t_gap > 180 and dis_gap < 1500:
+        if t_gap > 180 and dis_gap < 1000:
             real_stop_point.append(line)
 
     # step3：对停留进行融合
