@@ -6,7 +6,9 @@
 * `_get_trip_stop`：对整条轨迹识别出停留点与运动轨迹
 * `_write_to_shp`：将轨迹输出为shape文件
 ## 依赖
-`ogr`,`matplotlib`
+`OGR`,`matplotlib`<br>
+<br>
+[OGR安装](https://blog.csdn.net/savannahmyself/article/details/77185238)
 ## 流程
 1. 间断点识别<br>
 2. 停留点聚类<br>
