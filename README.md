@@ -7,6 +7,10 @@
 * `_write_to_shp`：将轨迹输出为shape文件
 ## 依赖
 `ogr`,`matplotlib`
-## 
+## 流程
+* 1. 间断点识别
+* 2. 停留点聚类
+* 3. 识别与融合停留点
+* 4. 轨迹识别
 
 ![](https://github.com/zhaotianhong/Beijing_DIDI/blob/master/Figure_1.png)
