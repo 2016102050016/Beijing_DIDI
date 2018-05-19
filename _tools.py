@@ -101,5 +101,37 @@ def show_map(merge_list):
             ax.plot(x, y, z, 'b')
         else:
             ax.plot(x, y, z, 'r--')
-
     plt.show()
+
+def write_to_files(data,path,car_id,xyt):
+    '''
+    写出文件
+    :param data: 识别数据
+    :param path: 输出路径
+    :param xyt: 布尔型，是否要输出xyt用于画矢量图
+    :return: 
+    '''
+    # 安装时间顺序写出
+    keys = sorted(data.keys())
+    with open(path,'a+') as fw:
+        for k in keys:
+            v = data[k]
+            type, xyt_str = 'TRIP', ''
+            if len(v[-1]) == 2:
+                type = 'STAY'
+            time = str(v[4])
+            dis = str(v[5])
+            start_int = str(v[-1][0][2])
+            start_str = str(v[-1][0][3])
+            end_int = str(v[-1][-1][2])
+            end_str = str(v[-1][-1][3])
+            # 是否需要xyt
+            if xyt:
+                for line in v[-1]:
+                    xyt_str += str(line[0])+','+str(line[1])+','+str(line[2])+' '
+                fw.write(str(car_id)+'\t'+type+'\t'+start_int+'\t'+end_int+'\t'+start_str+'\t'+end_str+'\t'
+                         +time+'\t'+dis+'\t'+xyt_str+'\n')
+            else:
+                fw.write(str(
+                    car_id) + '\t' + type + '\t' + start_int + '\t' + end_int + '\t' + start_str + '\t' + end_str + '\t'
+                         + time + '\t'  + dis + '\n')

@@ -5,7 +5,7 @@ import _tools
 
 def get_breakpoint(data_list):
     '''
-    根据断点切割轨迹：1.间断时间高于半个小时（1800s）切分；
+    根据断点切割轨迹：1.间断时间高于半个小时（20min）切分；
     :param data_list: 读取到的高于500记录的数据，且标记运动停留
     :return: 切分好的字典
     '''
@@ -61,8 +61,9 @@ def pre_stop_point(data_breakpoint, START_TIME, END_TIME):
 
 def get_stop_point(data_breakpoint, START_TIME, END_TIME):
     '''
-    找出真实的静止点：1.找出轨迹之间的停留；2.轨迹内部停留点聚类；3.轨迹内部停留段筛选；4.对凌晨停留点进行补充；5.停留点融合（合并）
-    :param data_stop: 标记速度为零的全部点
+    这个部分的参数非常重要！
+    找出真实的停留点：1.轨迹内部停留点聚类；2.判断停留；3.停留点融合（合并）
+    :param data_breakpoint: 标记速度为零的全部点
     :param START_TIME: 这一天的开始时间戳
     :param END_TIME: 结束时间戳
     :return: 
@@ -167,7 +168,7 @@ def get_trip(stop_point, data_original):
 def check_data(trip_stop, keys):
     '''
     再次筛选数据，剔除假运动轨迹
-    :param trip_stop: 
+    :param trip_stop: 停留点与运动的轨迹
     :param keys: 
     :return: 
     '''

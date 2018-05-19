@@ -10,7 +10,7 @@ PARA = _config.CONFIG
 if __name__ == '__main__':
     # 24号
     START,END = PARA['date']['24'][0],PARA['date']['24'][1]
-    path_dir = PARA['path']
+    path_dir = PARA['path_in']
 
     # 读取所有文件
     all_paths = _tools.get_all_csv(path_dir)
@@ -30,6 +30,8 @@ if __name__ == '__main__':
                     trip_stop = _get_trip_stop.get_trip(data_stop,data)
                     # 可视化
                     _tools.show_map(trip_stop)
+                    # 写出文件
+                    # _tools.write_to_files(trip_stop,PARA['path_out'],2,False)
                 else:
                     print 'no stop'
             else:
