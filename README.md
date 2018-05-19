@@ -8,9 +8,9 @@
 ## 依赖
 `ogr`,`matplotlib`
 ## 流程
-* 1. 间断点识别
-* 2. 停留点聚类
-* 3. 识别与融合停留点
-* 4. 轨迹识别
+1. 间断点识别<br>
+2. 停留点聚类<br>
+3. 识别与融合停留点<br>
+4. 轨迹识别<br>
 
 ![](https://github.com/zhaotianhong/Beijing_DIDI/blob/master/Figure_1.png)
