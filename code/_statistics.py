@@ -3,10 +3,25 @@
 # author: zhaotianhong
 # time: 2018/4/14 14:48
 
-import matplotlib.pyplot as plt
-import time
-import numpy as np
 
+CONFIG = {
+    # 调整统计参数：range：统计范围，超出范围用MORE表示；unit：每个统计单元的大小
+    # car_trip_dis_s一辆车总行驶距离；
+    # car_trip_time_s总行驶时间；
+    # car_stop_time_s总停留时间；
+    # trip_dis_s每段行驶的距离；
+    # trip_time_s每段行驶的时间；
+    # stop_time_s每次停留的时间；
+    # 单位：s,m
+    'car_trip_dis_s': {'range': 500000, 'unit': 3000},
+    'car_trip_time_s': {'range': 36000, 'unit': 180},
+    'car_stop_time_s': {'range': 86400, 'unit': 3600},
+    'trip_dis_s': {'range': 100000, 'unit': 3000},
+    'trip_time_s': {'range': 36000, 'unit': 1800},
+    'stop_time_s': {'range': 36000, 'unit': 180},
+    # 文件保存路径
+    'out_put_dir':r'../DATA/result'
+}
 
 def stas_(path):
     '''
@@ -145,29 +160,9 @@ def out_put_file(file_name,data):
         fw.write(str('MORE') + ',' + str(more) + '\n')
 
 
-#**********************************************#
-# 配置文件：可修改文件保存地址和统计量信息
-# range：统计多大范围内的；unit：每一段的大小
-# 单位：时间类型为：秒；距离类型为：米
-CONFIG = {
-    # 变量：
-    # car_trip_dis_s一辆车总行驶距离，car_trip_time_s总行驶时间，car_stop_time_s总停留时间；
-    # trip_dis_s每段行驶的距离，trip_time_s每段行驶的时间，stop_time_s每次停留的时间
-    # 根据需要修改：单位：s,m
-    'car_trip_dis_s': {'range': 500000, 'unit': 3000},
-    'car_trip_time_s': {'range': 36000, 'unit': 180},
-    'car_stop_time_s': {'range': 86400, 'unit': 3600},
-    'trip_dis_s': {'range': 100000, 'unit': 3000},
-    'trip_time_s': {'range': 36000, 'unit': 1800},
-    'stop_time_s': {'range': 36000, 'unit': 180},
-    # 文件保存路径
-    'out_put_dir':r'E:\sc\DIDI'
-}
-#**********************************************#
 
 if __name__ == '__main__':
-    path = r'C:\Users\szu\Desktop\beijing DIDI\数据（已识别停留点）\stastic25.txt'
-
+    path = r'../DATA/result/trip_stop.txt'
     # cacu_data车辆累积的行驶与停留时间与距离；
     # stop_time每次停留的时间；
     # trip_time每次行驶时间；
