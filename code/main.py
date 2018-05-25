@@ -5,6 +5,7 @@ import os
 import _config
 import _tools
 import _get_trip_stop
+import _trip_repair
 
 PARA = _config.CONFIG
 
@@ -12,6 +13,7 @@ if __name__ == '__main__':
     # 24号
     START,END = PARA['date']['24'][0],PARA['date']['24'][1]
     path_dir = r'../DATA/original'
+    # path_dir = r'E:\sc\beijingdidi\wrong'
     if os.path.exists(PARA['path_out']):
         os.remove(PARA['path_out'])
     car_id = 0
@@ -31,14 +33,14 @@ if __name__ == '__main__':
                 if data_stop:
                     # 计算停留点与运动点
                     trip_stop = _get_trip_stop.get_trip(data_stop,data)
-                    trip_stop = _get_trip_stop.add_virtual_point(trip_stop)
+                    result = _get_trip_stop.check_data(trip_stop)
                     car_id += 1
                     # 可视化
-                    # _tools.show_map(trip_stop)
+                    _tools.show_map(result)
                     # 写出文件
                     if car_id == 1000:
                         break
-                    _tools.write_to_files(trip_stop,PARA['path_out'],car_id,False)
+                    # _tools.write_to_files(result,PARA['path_out'],car_id,False)
                 else:
                     print 'no stop'
             else:
