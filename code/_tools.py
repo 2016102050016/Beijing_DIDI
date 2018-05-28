@@ -39,11 +39,14 @@ def time_to_timestamp(dt):
 
 def get_all_csv(f_dir):
     '''获取所有的文件'''
-    path_list = []
-    for file_name in os.listdir(f_dir):
-        p = os.path.join(f_dir, file_name)
-        path_list.append(p)
-    return path_list
+    print('file location:', f_dir)
+    L  = []
+    for root, dirs, files in os.walk(f_dir):
+        for file in files:
+            L.append(os.path.join(root, file))
+    print('file number:', len(L))
+    return L
+
 
 
 def read_data(path, START_TIME, END_TIME):
@@ -140,3 +143,30 @@ def write_to_files(data,path,car_id,xyt):
                 fw.write(str(
                     car_id) + '\t' + type + '\t' + start_int + '\t' + end_int + '\t' + start_str + '\t' + end_str + '\t'
                          + time + '\t'  + dis + '\n')
+
+
+
+def write_original_files(data,result,car_id):
+    '''
+    写出文件
+    :param data: 识别数据
+    :param path: 输出路径
+    :return: 
+    '''
+    move = []
+    for k,v in result.items():
+        if len(v[-1]) > 2:
+            move.extend(v[-1])
+    # 安装时间顺序写出
+    path = r'E:\sc\code\GIT\Beijing_DIDI\DATA\original.txt'
+    xyt_str = ''
+    data = sorted(data,key=lambda x:x[2])
+    with open(path, 'a+') as fw:
+        for line in data:
+            if [line[0],line[1],line[2],line[4]] in move:
+                type = 'MOVE'
+            else:
+                type = 'STAY'
+            xyt_str += str(line[0])+','+str(line[1])+','+str(line[2])+','+type+' '
+        fw.write(str(car_id)+'\t'+xyt_str+'\n')
+

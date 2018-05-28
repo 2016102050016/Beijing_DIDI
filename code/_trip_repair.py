@@ -43,29 +43,34 @@ def get_navigation(p1, p2, t1, t2):
 
 def repair(result):
     '''
-    两个点之间距离相隔500米以上，用导航gps轨迹修复
+    两个点之间距离相隔1000米以上，用导航gps轨迹修复
     :param result: 
     :return: 
     '''
-    list_plot, temp_list = [], []
     for k, v in result.items():
         add_point = []
+        add_point.extend(v[-1])
         if len(v[-1]) > 2:
             for i in range(len(v[-1])-1):
-                add_point.extend(v[-1][i])
-                first = list_plot[i]
-                second = list_plot[i + 1]
+                first = v[-1][i]
+                second = v[-1][i + 1]
                 dis = _tools.haversine(first[0], first[1], second[0], second[1])
-                if dis > 500:
+                # 两点相隔1km
+                if dis > 1000:
                     p1 = str(first[0]) + ',' + str(first[1])
                     t1 = first[2]
                     p2 = str(second[0]) + ',' + str(second[1])
                     t2 = second[2]
                     repair_data = get_navigation(p1, p2, t1, t2)
+                    if not repair_data:
+                        return None
                     add_point.extend(repair_data)
+        add_point = sorted(add_point,key=lambda x:x[2])
+        v[-1] = add_point
+    return result
 
 
 if __name__ == '__main__':
     p1 = '116.54832,39.88112'
     p2 = '116.48725,39.98947'
-    get_navigation(p1, p2)
+    # get_navigation(p1, p2)
