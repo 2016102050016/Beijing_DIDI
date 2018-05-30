@@ -1,6 +1,6 @@
 # encoding: utf-8
 # author: zhaotianhong
-
+import shutil
 import time
 from math import radians, cos, sin, asin, sqrt
 import os
@@ -40,13 +40,12 @@ def time_to_timestamp(dt):
 def get_all_csv(f_dir):
     '''获取所有的文件'''
     print('file location:', f_dir)
-    L  = []
+    L = []
     for root, dirs, files in os.walk(f_dir):
         for file in files:
             L.append(os.path.join(root, file))
     print('file number:', len(L))
     return L
-
 
 
 def read_data(path, START_TIME, END_TIME):
@@ -56,7 +55,7 @@ def read_data(path, START_TIME, END_TIME):
     :return: 
     '''
     # time_list用于去时间记录为重复的
-    data_list, time_list,total_dis = [], [],0
+    data_list, time_list, total_dis = [], [], 0
     with open(path, 'r') as f:
         for line in f:
             if len(line) > 10:
@@ -76,6 +75,11 @@ def read_data(path, START_TIME, END_TIME):
     temp_data[0][3] = 0
     for i in range(1, len(data_list)):
         dis = haversine(temp_data[-1][0], temp_data[-1][1], data_list[i][0], data_list[i][1])
+
+        # 可视化间断点筛选
+        if dis > 1000:
+            return None
+
         total_dis += dis
         time_gap = abs(data_list[i][2] - temp_data[-1][2])
         v = dis / time_gap
@@ -93,12 +97,19 @@ def read_data(path, START_TIME, END_TIME):
     return data_list
 
 
-def show_map(merge_list):
+def show_map(merge_list, data):
     '''3D显示用于分析'''
+
     fig = plt.figure()
     ax = Axes3D(fig)
     num = 0
-    for k,v in merge_list.items():
+
+    move = []
+    for k, v in merge_list.items():
+        if len(v[-1]) > 2:
+            move.extend(v[-1])
+
+    for k, v in merge_list.items():
         num += 1
         x, y, z = [], [], []
         for i in v[-1]:
@@ -109,9 +120,24 @@ def show_map(merge_list):
             ax.plot(x, y, z, 'b')
         else:
             ax.plot(x, y, z, 'r--')
+    x_move, y_move, t_move = [], [], []
+    x_stay, y_stay, t_stay = [], [], []
+
+    for line in data:
+        if [line[0], line[1], line[2], line[4]] in move:
+            x_move.append(line[0])
+            y_move.append(line[1])
+            t_move.append(line[2])
+        else:
+            x_stay.append(line[0])
+            y_stay.append(line[1])
+            t_stay.append(line[2])
+    ax.scatter(x_move, y_move, t_move)
+    ax.scatter(x_stay, y_stay, t_stay)
     plt.show()
 
-def write_to_files(data,path,car_id,xyt):
+
+def write_to_files(data, car_id, xyt):
     '''
     写出文件
     :param data: 识别数据
@@ -120,8 +146,10 @@ def write_to_files(data,path,car_id,xyt):
     :return: 
     '''
     # 安装时间顺序写出
+    path = r'../DATA/result/trip_stop.txt'
+
     keys = sorted(data.keys())
-    with open(path,'a+') as fw:
+    with open(path, 'a+') as fw:
         for k in keys:
             v = data[k]
             type, xyt_str = 'TRIP', ''
@@ -133,20 +161,37 @@ def write_to_files(data,path,car_id,xyt):
             start_str = str(v[-1][0][3])
             end_int = str(v[-1][-1][2])
             end_str = str(v[-1][-1][3])
+            start_xy = (str(v[-1][0][0]), str(v[-1][0][1]))
+            end_xy = (str(v[-1][-1][0]), str(v[-1][-1][1]))
             # 是否需要xyt
             if xyt:
                 for line in v[-1]:
-                    xyt_str += str(line[0])+','+str(line[1])+','+str(line[2])+' '
-                fw.write(str(car_id)+'\t'+type+'\t'+start_int+'\t'+end_int+'\t'+start_str+'\t'+end_str+'\t'
-                         +time+'\t'+dis+'\t'+xyt_str+'\n')
-            else:
+                    xyt_str += str(line[0]) + ',' + str(line[1]) + ',' + str(line[2]) + ' '
                 fw.write(str(
                     car_id) + '\t' + type + '\t' + start_int + '\t' + end_int + '\t' + start_str + '\t' + end_str + '\t'
-                         + time + '\t'  + dis + '\n')
+                         + start_xy[0]  + '\t' + start_xy[1] + '\t' + end_xy[0] + '\t' + end_xy[1] + '\t'
+                         + time + '\t' + dis + '\t' + xyt_str + '\n')
+            else:
+                fw.write(str(
+                    car_id) + '\t' + type + '\t' + start_int + '\t' + end_int + '\t' + start_str + '\t' + end_str +'\t' + start_xy[0]
+                         + '\t' + start_xy[1] + '\t' + end_xy[0] + '\t' + end_xy[1] + '\t'  + time + '\t' + dis + '\n')
 
 
+def reset_dir():
+    '''
+    重置文件
+    :return: 
+    '''
+    filelist = os.listdir(r'../DATA/result')
+    for f in filelist:
+        filepath = os.path.join(r'../DATA/result', f)
+        if os.path.isfile(filepath):
+            os.remove(filepath)
+        elif os.path.isdir(filepath):
+            shutil.rmtree(filepath, True)
 
-def write_original_files(data,result,car_id):
+
+def write_original_files(data, result, car_id):
     '''
     写出文件
     :param data: 识别数据
@@ -154,19 +199,18 @@ def write_original_files(data,result,car_id):
     :return: 
     '''
     move = []
-    for k,v in result.items():
+    for k, v in result.items():
         if len(v[-1]) > 2:
             move.extend(v[-1])
     # 安装时间顺序写出
-    path = r'E:\sc\code\GIT\Beijing_DIDI\DATA\original.txt'
+    path = r'../DATA/result/original.txt'
     xyt_str = ''
-    data = sorted(data,key=lambda x:x[2])
+    data = sorted(data, key=lambda x: x[2])
     with open(path, 'a+') as fw:
         for line in data:
-            if [line[0],line[1],line[2],line[4]] in move:
+            if [line[0], line[1], line[2], line[4]] in move:
                 type = 'MOVE'
             else:
                 type = 'STAY'
-            xyt_str += str(line[0])+','+str(line[1])+','+str(line[2])+','+type+' '
-        fw.write(str(car_id)+'\t'+xyt_str+'\n')
-
+            xyt_str += str(line[0]) + ',' + str(line[1]) + ',' + str(line[2]) + ',' + type + ' '
+        fw.write(str(car_id) + '\t' + xyt_str + '\n')

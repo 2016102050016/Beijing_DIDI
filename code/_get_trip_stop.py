@@ -8,12 +8,12 @@ import _tools
 _t_breakpoint = 600
 
 # 停留记录聚类：相邻两个记录停留的时间间隔；相邻两个点的距离
-_t_cluster = 120
-_d_cluster = 500
+_t_cluster = 20
+_d_cluster = 50
 
 # 判断真实的停留点：通过对聚类的速度为0的集合，判断停留的真实性
 # 若集合内持续时间高于3min，且集合内部速度小于1（用速度比距离好）
-_t_judge_stop = 180
+_t_judge_stop = 60
 _v_judge_stop = 1
 
 # 合并停留：若两个停留时间间隔短或者距离很近合并为一次停留
@@ -21,7 +21,7 @@ _t_merge_stop = 180
 _d_merge_stop = 500
 
 # 筛选运动:若运动距离很短剔除掉
-_d_filter_trip = 1000
+_d_filter_trip = 100
 
 # 添加虚拟点：若停留点与下一个运动之间间断500米以上距离，添加虚拟点在停留点出
 _d_add_virtual_point = 500

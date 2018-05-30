@@ -4,6 +4,7 @@
 CONFIG = {
     'path_in':'../DATA/original',
     'path_out':'../DATA/result/trip_stop.txt',
+    'path_original':r'../DATA/result/original.txt',
     'date':{'24':[1448294400,1448380800],
             '25':[1448380800,1448467200],
             '26':[1448467200,1448553600],
