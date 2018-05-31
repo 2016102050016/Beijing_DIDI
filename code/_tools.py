@@ -75,11 +75,6 @@ def read_data(path, START_TIME, END_TIME):
     temp_data[0][3] = 0
     for i in range(1, len(data_list)):
         dis = haversine(temp_data[-1][0], temp_data[-1][1], data_list[i][0], data_list[i][1])
-
-        # 可视化间断点筛选
-        if dis > 1000:
-            return None
-
         total_dis += dis
         time_gap = abs(data_list[i][2] - temp_data[-1][2])
         v = dis / time_gap
